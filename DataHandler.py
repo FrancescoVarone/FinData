@@ -102,11 +102,13 @@ class DataHandler():
 
 
     def getHistClose(self, ticker: str, flag: str, sDate: dt.datetime, eDate: dt.datetime):
-        if sDate > eDate : return 'Error: start date cannot be greater than end date'
+        if sDate > eDate :
+            sys.stdout.write('Error: start date cannot be greater than end date' + '\n')
+            raise Exception()
         try: dummy = self.__data[flag][ticker]
         except:
-            if flag == 'stock': sys.stdout.write('Ticker not included in the Database' + '\n')
-            else: sys.stdout.write('Currency not included in the Database' + '\n')
+            if flag == 'stock': sys.stdout.write('Error: ticker not included in the Database' + '\n')
+            else: sys.stdout.write('Error: curency not included in the Database' + '\n')
 
         # Setting eIndex
         resDic = {}
@@ -133,3 +135,17 @@ class DataHandler():
         maxSdate = self.__data[flag][ticker]['quotes']['t'][0]
         maxEdate = self.__data[flag][ticker]['quotes']['t'][-1]
         return self.getHistClose(ticker, flag, maxSdate, maxEdate)
+
+
+    def getMaxDate(self, ticker: str, flag: str):
+        try:
+            return self.__data[flag][ticker]['quotes']['t'][-1]
+        except:
+            sys.stdout.write('Error: ticker not included in the Database' + '\n')
+
+
+    def getMinDate(self, ticker: str, flag: str):
+        try:
+            return self.__data[flag][ticker]['quotes']['t'][0]
+        except:
+            sys.stdout.write('Error: ticker not included in the Database' + '\n')
