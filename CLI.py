@@ -13,8 +13,17 @@ class CLI(cmd.Cmd):
         self.__dataHandler = dataHandler
 
 
+    def help_plotHistRates(self):
+        sys.stdout.write('\n' + "Plots the historical rates for a given currency. StartDate and EndDate are optional"
+                                " parameters" + '\n')
+        sys.stdout.write("Syntax is: 'plotHistRates currency startDate endDate'" + '\n')
+        sys.stdout.write("To get the whole rates history, just type: 'plotHistRates currency'" + '\n')
+        sys.stdout.write("Example: 'plotHistRates AUD 12/01/2020 12/15/2020'" + '\n\n')
+
+
     def help_plotHistPrices(self):
-        sys.stdout.write('\n' + "Plots the historical prices for a given ticker. StartDate and EndDate are optinal parameters" + '\n')
+        sys.stdout.write('\n' + "Plots the historical prices for a given ticker. StartDate and EndDate are optional"
+                                " parameters" + '\n')
         sys.stdout.write("Syntax is: 'plotHistPrices ticker startDate endDate'" + '\n')
         sys.stdout.write("To get the whole prices history, just type: 'plotHistPrices ticker'" + '\n')
         sys.stdout.write("Example: 'plotHistPrices AAPL 12/01/2020 12/15/2020'" + '\n\n')
@@ -31,6 +40,10 @@ class CLI(cmd.Cmd):
         sys.stdout.write("Print 'quit' to exit the program" + '\n')
 
 
+    def do_plotHistRates(self, args):
+        self.__plotHistRates(args)
+
+
     def do_plotHistPrices(self, args):
         self.__plotHistPrices(args)
 
@@ -43,7 +56,15 @@ class CLI(cmd.Cmd):
         sys.exit(1)
 
 
+    def __plotHistRates(self, args):
+        self.__plotHistQuotes(args, 'fx')
+
+
     def __plotHistPrices(self, args):
+        self.__plotHistQuotes(args, 'stock')
+
+
+    def __plotHistQuotes(self, args, flag):
         try:
             ticker = args.split()[0]
         except:
@@ -51,11 +72,11 @@ class CLI(cmd.Cmd):
             return
         try:
             if len(args.split()) == 1:
-                sDate = self.__dataHandler.getMinDate(ticker, 'stock').strftime('%m/%d/%Y')
-                eDate = self.__dataHandler.getMaxDate(ticker, 'stock').strftime('%m/%d/%Y')
+                sDate = self.__dataHandler.getMinDate(ticker, flag).strftime('%m/%d/%Y')
+                eDate = self.__dataHandler.getMaxDate(ticker, flag).strftime('%m/%d/%Y')
             if len(args.split()) == 2:
                 sDate = args.split()[1]
-                eDate = self.__dataHandler.getMaxDate(ticker, 'stock').strftime('%m/%d/%Y')
+                eDate = self.__dataHandler.getMaxDate(ticker, flag).strftime('%m/%d/%Y')
             if len(args.split()) > 2:
                 sDate = args.split()[1]
                 eDate = args.split()[2]
@@ -70,18 +91,19 @@ class CLI(cmd.Cmd):
             sys.stdout.write('Error: please enter a valid end date, format must be: mm/dd/yyyy' + '\n')
             return
         try:
-            stockRes = self.__dataHandler.getHistClose(ticker, 'stock', sDate, eDate)
+            if flag == 'stock': res = self.__dataHandler.getHistClose(ticker, flag, sDate, eDate)
+            else: res = self.__dataHandler.getHistClose('OANDA:'+ticker+'_USD', flag, sDate, eDate)
         except: return
 
-        if len(stockRes.keys()) >= 2:
+        if len(res.keys()) >= 2:
             fig = plt.Figure()
             fig.x_label = 'Time'
             fig.y_label = 'Prices'
             fig.width = 120
             fig.height = 30
-            fig.set_x_limits(min_=list(stockRes.keys())[0], max_=list(stockRes.keys())[-1])
-            fig.set_y_limits(min_=0.8*min(list(stockRes.values())), max_=1.1*max(list(stockRes.values())))
-            fig.plot(stockRes.keys(), stockRes.values())
+            fig.set_x_limits(min_=list(res.keys())[0], max_=list(res.keys())[-1])
+            fig.set_y_limits(min_=0.8*min(list(res.values())), max_=1.1*max(list(res.values())))
+            fig.plot(res.keys(), res.values())
             sys.stdout.write('\n' + fig.show(legend=False) + '\n\n\n')
         else:
             sys.stdout.write('Error: Graph requires at least 2 values to be showed' + '\n')

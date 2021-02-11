@@ -139,13 +139,16 @@ class DataHandler():
 
     def getMaxDate(self, ticker: str, flag: str):
         try:
-            return self.__data[flag][ticker]['quotes']['t'][-1]
+            if flag == 'stock': return self.__data[flag][ticker]['quotes']['t'][-1]
+            else: return self.__data[flag]['OANDA:'+ticker+'_USD']['quotes']['t'][-1]
         except:
-            sys.stdout.write('Error: ticker not included in the Database' + '\n')
-
+            if flag == 'stock': sys.stdout.write('Error: ticker not included in the Database' + '\n')
+            else: sys.stdout.write('Error: currency not included in the Database' + '\n')
 
     def getMinDate(self, ticker: str, flag: str):
         try:
-            return self.__data[flag][ticker]['quotes']['t'][0]
+            if flag == 'stock': return self.__data[flag][ticker]['quotes']['t'][0]
+            else: return self.__data[flag]['OANDA:'+ticker+'_USD']['quotes']['t'][0]
         except:
-            sys.stdout.write('Error: ticker not included in the Database' + '\n')
+            if flag == 'stock': sys.stdout.write('Error: ticker not included in the Database' + '\n')
+            else: sys.stdout.write('Error: currency not included in the Database' + '\n')
