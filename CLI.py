@@ -3,14 +3,24 @@ import sys
 import datetime as dt
 import Utilities as ut
 import plotille as plt
+import urllib.request
+import json
 
 class CLI(cmd.Cmd):
 
-    def __init__(self, dataHandler):
+    def __init__(self, dataHandler, token):
         cmd.Cmd.__init__(self)
         self.prompt = '>>> '
         self.intro = "Type your command or write 'help' to see all available commands"
         self.__dataHandler = dataHandler
+        self.__token = token
+
+
+    def help_getLastQuotes(self):
+        sys.stdout.write('\n' + "Retrieves the last quotes (close/open/high/low) for the given ticker. Currency"
+                                " is an optional parameter" + '\n')
+        sys.stdout.write("Syntax is: 'getLastQuotes ticker currency'" + '\n')
+        sys.stdout.write("Example: 'getLastQuotes AAPL GBP'" + '\n\n')
 
 
     def help_plotHistRates(self):
@@ -40,6 +50,10 @@ class CLI(cmd.Cmd):
         sys.stdout.write("Print 'quit' to exit the program" + '\n')
 
 
+    def do_getLastQuotes(self, args):
+        self.__getLastQuotes(args)
+
+
     def do_plotHistRates(self, args):
         self.__plotHistRates(args)
 
@@ -54,6 +68,33 @@ class CLI(cmd.Cmd):
 
     def do_quit(self, arg):
         sys.exit(1)
+
+
+    def __getLastQuotes(self, args):
+        try:
+            ticker = args.split()[0]
+        except:
+            sys.stdout.write('Error: please enter at least the required inputs: ticker' + '\n')
+            return
+        if len(args.split()) >= 2:
+            currency = args.split()[1]
+            urlCurrency = 'https://finnhub.io/api/v1/forex/rates?base=USD&token=' + self.__token
+            resCurrency = urllib.request.urlopen(urlCurrency)
+            try:
+                fxRate = json.load(resCurrency)['quote'][currency]
+            except:
+                sys.stdout.write('Error: currency not available' +'\n')
+                return
+        else:
+            fxRate = 1
+
+        urlStock = 'https://finnhub.io/api/v1/quote?symbol=' + ticker + '&token=' + self.__token
+        resStock = urllib.request.urlopen(urlStock)
+        stockDic = json.load(resStock)
+        sys.stdout.write('Close: ' + str(round(stockDic['c']*fxRate, 2)) + '\n')
+        sys.stdout.write('High: ' + str(round(stockDic['h']*fxRate, 2)) + '\n')
+        sys.stdout.write('Low: ' + str(round(stockDic['l']*fxRate, 2)) + '\n')
+        sys.stdout.write('Open: ' + str(round(stockDic['o']*fxRate, 2)) + '\n')
 
 
     def __plotHistRates(self, args):

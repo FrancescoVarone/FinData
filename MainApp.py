@@ -7,7 +7,7 @@ sys.stdout.write('Welcome to FinData: a simple CLI for retrieving financial data
 token = input('Please enter your API key to get data from Finnhub: ')
 token = 'c0f7i1748v6snrib4ca0'
 dataHandler = DataHandler.DataHandler(token)
-cli = CLI.CLI(dataHandler)
+cli = CLI.CLI(dataHandler, token)
 cli.cmdloop()
 
 
