@@ -21,6 +21,9 @@
 #   - to load data from finnhub (by using 'load_db' method)
 #   - to perform simple queries to get the data (mainly by using 'get_hist_close' method)
 
+# ToDo:
+#   - check if data can be retrieved faster from finnhub by using the appropriate library
+#   - catch the absence of connection with an appropriate Exception
 
 import json
 import datetime as dt
@@ -164,15 +167,20 @@ class DataHandler:
 
     def get_hist_close(self, ticker: str, flag: str, s_date: dt.datetime, e_date: dt.datetime) -> dict:
         """Retrieves the close prices or rates for the given ticker in the given time range"""
-        if s_date > e_date:
-            raise Exception('Error: start date cannot be greater than end date')
         if not (ticker in list(self.__data[flag].keys())):
             if flag == 'stock':
                 msg = 'Error: ticker not included in the Database'
             else:
                 msg = 'Error: currency not included in the Database'
             raise Exception(msg)
-
+        if s_date > e_date:
+            raise Exception('Error: start date cannot be greater than end date')
+        if s_date > self.__data[flag][ticker]['quotes']['t'][-1]:
+            raise Exception('Error: start date cannot be greater than max DB date: ' +
+                            self.__data[flag][ticker]['quotes']['t'][-1].strftime('%Y/%m/%d'))
+        if e_date < self.__data[flag][ticker]['quotes']['t'][0]:
+            raise Exception('Error: end date cannot be less than min DB date: ' +
+                            self.__data[flag][ticker]['quotes']['t'][0].strftime('%Y/%m/%d'))
         # Setting eIndex
         res_dic = {}
         if e_date >= self.__data[flag][ticker]['quotes']['t'][-1]:

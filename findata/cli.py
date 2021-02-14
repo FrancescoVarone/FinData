@@ -159,7 +159,7 @@ class CLI(cmd.Cmd):
 
         for i in range(0, len(args_obtained)):
             if i + 1 > len(list(args_exp.keys())):
-                raise Exception('Too many arguments')
+                raise Exception('Error: too many arguments')
             args_dic[args_names[i]] = args_obtained[i]
 
         for name in args_names:
