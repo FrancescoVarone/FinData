@@ -10,6 +10,12 @@ class MethodHandler:
         self.__dataHandler = data_handler
         self.__token = token
 
+    def get_currencies(self) -> list:
+        return self.__dataHandler.get_currencies()
+
+    def get_stocks(self) -> list:
+        return self.__dataHandler.get_stocks()
+
     def get_last_quotes(self, ticker: str, currency) -> dict:
         if currency != '':
             url_currency = 'https://finnhub.io/api/v1/forex/rates?base=USD&token=' + self.__token

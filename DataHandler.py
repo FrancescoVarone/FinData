@@ -29,6 +29,15 @@ class DataHandler:
         self.__e_date_unix = str(mt.trunc(self.__e_date.timestamp()))
         self.__s_date_unix = str(mt.trunc(self.__s_date.timestamp()))
 
+    def get_currencies(self) -> list:
+        ls = []
+        for i in list(self.__data['fx'].keys()):
+            ls.append(self.__data['fx'][i]['anag']['displaySymbol'])
+        return ls
+
+    def get_stocks(self) -> list:
+        return list(self.__data['stock'].keys())
+
     def load_db_manually(self, ticker: str, data: dict) -> None:
         self.__data['stock'][ticker]['quotes'] = {}
         self.__data['stock'][ticker]['quotes']['t'] = list(data.keys())

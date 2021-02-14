@@ -15,6 +15,14 @@ class CLI(cmd.Cmd):
                      "Type your command or write 'help' to see all available commands"
         self.__methodHandler = methodHandler
 
+    def help_get_stocks(self):
+        sys.stdout.write('\n' + "Retrieves the list of available tickers in the DB" + '\n')
+        sys.stdout.write("Syntax is: 'get_tickers'" + '\n\n')
+
+    def help_get_currencies(self):
+        sys.stdout.write('\n' + "Retrieves the list of available fx rate in the DB" + '\n')
+        sys.stdout.write("Syntax is: 'get_currencies'" + '\n\n')
+
     def help_get_last_quotes(self):
         sys.stdout.write('\n' + "Retrieves the last quotes (close/open/high/low) for the given ticker. Currency"
                                 " is an optional parameter" + '\n')
@@ -44,6 +52,18 @@ class CLI(cmd.Cmd):
     def help_quit(self):
         sys.stdout.write('\n' + "Print 'quit' to exit the program" + '\n\n')
 
+    def do_get_currencies(self, args):
+        res = self.__methodHandler.get_currencies()
+        for i in res:
+            sys.stdout.write(i + '\n')
+        sys.stdout.write('\n')
+
+    def do_get_stocks(self, args):
+        res = self.__methodHandler.get_stocks()
+        for i in res:
+            sys.stdout.write(i + '\n')
+        sys.stdout.write('\n')
+
     def do_get_last_quotes(self, args):
         try:
             exp_args = {'Ticker': {'Type': 'String', 'Required': 1}, 'Currency': {'Type': 'String', 'Required': 0}}
@@ -55,7 +75,6 @@ class CLI(cmd.Cmd):
             sys.stdout.write('Open: ' + str(res['o']) + '\n\n')
         except Exception as e:
             sys.stdout.write(str(e) + '\n\n')
-
 
     def do_plot_hist_rates(self, args: str) -> None:
         try:
