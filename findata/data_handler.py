@@ -44,11 +44,12 @@ class DataHandler:
         self.__data['stock'][ticker]['quotes']['t'] = list(data.keys())
         self.__data['stock'][ticker]['quotes']['c'] = list(data.values())
 
-    def load_db(self):
+    def load_db(self) -> None:
         self.__load_stock_data()
         self.__load_fx_data()
 
-    def __load_stock_data(self):
+    def __load_stock_data(self) -> None:
+        # loading anag data
         for i in range(0, len(self.__stock_tickers)):
             ticker = self.__stock_tickers[i]
             url = 'https://finnhub.io/api/v1/stock/profile2?symbol=' + ticker + '&token=' + self.__token
@@ -65,6 +66,7 @@ class DataHandler:
                              str(mt.trunc((i + 1) / len(self.__stock_tickers) * 100)) + '%')
         sys.stdout.write('\n')
 
+        # loading price data
         for i in range(0, len(self.__stock_tickers)):
             ticker = self.__stock_tickers[i]
             res = None
@@ -81,13 +83,15 @@ class DataHandler:
             sys.stdout.write('Loading DB with stock price data. Please wait... ' +
                              str(mt.trunc((i + 1) / len(self.__stock_tickers) * 100)) + '%')
         sys.stdout.write('\n')
+
         # Convert unix time stamps to dates
         for ticker in self.__stock_tickers:
             for i in range(0, len(self.__data['stock'][ticker]['quotes']['t'])):
                 date = dt.datetime.utcfromtimestamp(self.__data['stock'][ticker]['quotes']['t'][i])
                 self.__data['stock'][ticker]['quotes']['t'][i] = dt.datetime(date.year, date.month, date.day)
 
-    def __load_fx_data(self):
+    def __load_fx_data(self) -> None:
+        # loading anag data
         for i in range(0, len(self.__fx_tickers)):
             ticker = self.__fx_tickers[i]
             res = None
@@ -106,6 +110,7 @@ class DataHandler:
                              str(mt.trunc((i + 1) / len(self.__fx_tickers) * 100)) + '%')
         sys.stdout.write('\n')
 
+        # loading rates data
         for i in range(0, len(self.__fx_tickers)):
             ticker = self.__fx_tickers[i]
             res = None
@@ -138,6 +143,7 @@ class DataHandler:
             else:
                 msg = 'Error: currency not included in the Database'
             raise Exception(msg)
+
         # Setting eIndex
         res_dic = {}
         if e_date >= self.__data[flag][ticker]['quotes']['t'][-1]:
@@ -147,6 +153,7 @@ class DataHandler:
             while self.__data[flag][ticker]['quotes']['t'][i] <= e_date:
                 i = i + 1
             e_index = i - 1
+
         # Setting sIndex
         if s_date <= self.__data[flag][ticker]['quotes']['t'][0]:
             s_index = 0

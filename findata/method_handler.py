@@ -1,12 +1,12 @@
 import datetime as dt
-import Utilities as ut
+import utilities as ut
 import urllib.request
 import json
-import DataHandler as Dh
+import data_handler as dh
 
 
 class MethodHandler:
-    def __init__(self, data_handler: Dh.DataHandler, token: str):
+    def __init__(self, data_handler: dh.DataHandler, token: str):
         self.__dataHandler = data_handler
         self.__token = token
 
@@ -30,7 +30,6 @@ class MethodHandler:
         for key in list(res_stock.keys()):
             res_stock[key] = round(res_stock[key] * fx_rate, 2)
         return res_stock
-
 
     def plot_hist_quotes(self, ticker: str, s_date, e_date, flag: str) -> dict:
         if s_date == '':

@@ -1,26 +1,26 @@
 import cmd
 import sys
-import MethodHandler as mh
+import method_handler as mh
 import datetime as dt
 import plotille as plt
 
 
 class CLI(cmd.Cmd):
 
-    def __init__(self, methodHandler: mh.MethodHandler):
+    def __init__(self, method_handler: mh.MethodHandler):
         cmd.Cmd.__init__(self)
         self.prompt = '>>> '
-        self.intro = 'DB loaded successfully! You have at you disposal 1Y history data for the ' \
+        self.intro = 'DB loaded successfully! You have at your disposal 1Y history data for the ' \
                      'largest 100 stocks of the S&P 500 index' + '\n' + \
                      "Type your command or write 'help' to see all available commands"
-        self.__methodHandler = methodHandler
+        self.__methodHandler = method_handler
 
     def help_get_stocks(self):
         sys.stdout.write('\n' + "Retrieves the list of available tickers in the DB" + '\n')
-        sys.stdout.write("Syntax is: 'get_tickers'" + '\n\n')
+        sys.stdout.write("Syntax is: 'get_stocks'" + '\n\n')
 
     def help_get_currencies(self):
-        sys.stdout.write('\n' + "Retrieves the list of available fx rate in the DB" + '\n')
+        sys.stdout.write('\n' + "Retrieves the list of available fx rates in the DB" + '\n')
         sys.stdout.write("Syntax is: 'get_currencies'" + '\n\n')
 
     def help_get_last_quotes(self):
@@ -31,7 +31,7 @@ class CLI(cmd.Cmd):
 
     def help_plot_hist_rates(self):
         sys.stdout.write('\n' + "Plots the historical rates for a given currency. StartDate and EndDate are optional"
-                                " parameters. Data refers to OANDA exchange" + '\n')
+                                " parameters. Data refer to OANDA exchange" + '\n')
         sys.stdout.write("Syntax is: 'plot_hist_rates currency startDate endDate'" + '\n')
         sys.stdout.write("To get the whole rates history, just type: 'plot_hist_rates currency'" + '\n')
         sys.stdout.write("Example: 'plot_hist_rates AUD 2020/12/01 2020/12/15'" + '\n\n')
@@ -44,27 +44,27 @@ class CLI(cmd.Cmd):
         sys.stdout.write("Example: 'plot_hist_prices AAPL 2020/12/01 2020/12/15'" + '\n\n')
 
     def help_get_hist_prices(self):
-        sys.stdout.write('\n' + "Gets the historical prices for a given ticker in a given time range. Currency is "
-                         "an optional parameter." + '\n')
+        sys.stdout.write('\n' + "Retrieves the historical prices for a given ticker in a given time range. Currency is "
+                                "an optional parameter" + '\n')
         sys.stdout.write("Syntax is: 'get_hist_prices ticker startDate endDate currency'" + '\n')
         sys.stdout.write("Example: 'get_hist_prices AAPL 2020/12/01 2020/12/15 GBP'" + '\n\n')
 
     def help_quit(self):
         sys.stdout.write('\n' + "Print 'quit' to exit the program" + '\n\n')
 
-    def do_get_currencies(self, args):
+    def do_get_currencies(self, args: str) -> None:
         res = self.__methodHandler.get_currencies()
         for i in res:
             sys.stdout.write(i + '\n')
         sys.stdout.write('\n')
 
-    def do_get_stocks(self, args):
+    def do_get_stocks(self, args:str) -> None:
         res = self.__methodHandler.get_stocks()
         for i in res:
             sys.stdout.write(i + '\n')
         sys.stdout.write('\n')
 
-    def do_get_last_quotes(self, args):
+    def do_get_last_quotes(self, args: str) -> None:
         try:
             exp_args = {'Ticker': {'Type': 'String', 'Required': 1}, 'Currency': {'Type': 'String', 'Required': 0}}
             args = self.parse_args(args, exp_args)
@@ -131,7 +131,7 @@ class CLI(cmd.Cmd):
         except Exception as e:
             sys.stdout.write(str(e) + '\n\n')
 
-    def do_quit(self, args):
+    def do_quit(self, args: str) -> None:
         sys.exit(1)
 
     def parse_args(self, args_obtained: str, args_exp: dict) -> dict:  # argsExp is {argName:{type: xxx, req: xxx}, ...}
@@ -140,7 +140,7 @@ class CLI(cmd.Cmd):
         args_names = list(args_exp.keys())  # names of the expected args
 
         for i in range(0, len(args_obtained)):
-            if i+1 > len(list(args_exp.keys())):
+            if i + 1 > len(list(args_exp.keys())):
                 raise Exception('Too many arguments')
             args_dic[args_names[i]] = args_obtained[i]
 
@@ -152,6 +152,6 @@ class CLI(cmd.Cmd):
                     args_dic[name] = dt.datetime.strptime(args_dic[name], '%Y/%m/%d')
                 except:
                     raise Exception('Error: please enter a valid date for ' + name + '. Right format is: yyyy/mm/dd')
-            if not name in list(args_dic.keys()):
+            if name not in list(args_dic.keys()):
                 args_dic[name] = ''
         return args_dic
