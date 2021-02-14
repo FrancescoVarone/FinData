@@ -1,3 +1,7 @@
+# The present script is used to run properly the program.
+# It creates the CLI object and initializes the cmdloop in which user's commands are processed.
+
+
 import cli
 import data_handler as dh
 import method_handler as mh

@@ -1,3 +1,27 @@
+# The present class contains the DB of the program and the methods to query the DB.
+# The DB is the attribute 'data' of this class. As a private attribute it can be modified only by the methods
+#   of this class. This avoids other parts of the code to harm the integrity of the data.
+
+# The attribute 'data' is a dict. It contains two main keys to separate stock data from fx data:
+#   data.keys() = ['stock', 'fx']
+
+# The stock data are stored in the following manner:
+#       data['stock'].keys() = [ticker1, ticker2, ...]
+#           data['stock'][ticker].keys() = ['anag', 'quotes']
+#               data['stock'][ticker]['anag'].keys() = ['country', 'currency', ...]
+#               data['stock'][ticker]['quotes'].keys() = ['c', 'h', 't', ...]
+
+# The fx data are organized in the following manner:
+#       data['fx'].keys() = [ticker1, ticker2, ...]
+#           data['fx'][ticker].keys() = ['anag', 'quotes']
+#               data['fx'][ticker]['anag'].keys() = ['description', 'displaySymbol', ...]
+#               data['fx'][ticker]['quotes'].keys() = ['c', 'h', 't', ...]
+
+# The duties of the class are:
+#   - to load data from finnhub (by using 'load_db' method)
+#   - to perform simple queries to get the data (mainly by using 'get_hist_close' method)
+
+
 import json
 import datetime as dt
 import math as mt
@@ -49,6 +73,8 @@ class DataHandler:
         self.__load_fx_data()
 
     def __load_stock_data(self) -> None:
+        """"Gets from finnhub anagraphic data and quotes data for the stocks in self.__stock_tickers and uploads
+         them into the DB"""
         # loading anag data
         for i in range(0, len(self.__stock_tickers)):
             ticker = self.__stock_tickers[i]
@@ -91,6 +117,8 @@ class DataHandler:
                 self.__data['stock'][ticker]['quotes']['t'][i] = dt.datetime(date.year, date.month, date.day)
 
     def __load_fx_data(self) -> None:
+        """"Gets from finnhub anagraphic data and quotes data for the fx rates in self.__fx_tickers and uploads
+         them into the DB"""
         # loading anag data
         for i in range(0, len(self.__fx_tickers)):
             ticker = self.__fx_tickers[i]
@@ -135,6 +163,7 @@ class DataHandler:
                 self.__data['fx'][ticker]['quotes']['t'][i] = dt.datetime(date.year, date.month, date.day)
 
     def get_hist_close(self, ticker: str, flag: str, s_date: dt.datetime, e_date: dt.datetime) -> dict:
+        """Retrieves the close prices or rates for the given ticker in the given time range"""
         if s_date > e_date:
             raise Exception('Error: start date cannot be greater than end date')
         if not (ticker in list(self.__data[flag].keys())):

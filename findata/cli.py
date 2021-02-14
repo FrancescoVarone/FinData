@@ -1,3 +1,11 @@
+# The present class inherits from the built-in Cmd class.
+# The duties of this class are:
+#   - to catch user's command (by inheriting from Cmd class)
+#   - to identify the inputs contained in the command string (by using the parse_args method)
+#   - to run the appropriate method associated with the user's command (by calling method_handler's methods)
+#   - to print the results of the method called (by using stdout or plotille module)
+
+
 import cmd
 import sys
 import method_handler as mh
@@ -58,13 +66,15 @@ class CLI(cmd.Cmd):
             sys.stdout.write(i + '\n')
         sys.stdout.write('\n')
 
-    def do_get_stocks(self, args:str) -> None:
+    def do_get_stocks(self, args: str) -> None:
         res = self.__methodHandler.get_stocks()
         for i in res:
             sys.stdout.write(i + '\n')
         sys.stdout.write('\n')
 
     def do_get_last_quotes(self, args: str) -> None:
+        """Calls the parser to identify the inputs, then calls the appropriate method to get the last quotes
+         through method_handler and prints the obtained results"""
         try:
             exp_args = {'Ticker': {'Type': 'String', 'Required': 1}, 'Currency': {'Type': 'String', 'Required': 0}}
             args = self.parse_args(args, exp_args)
@@ -77,6 +87,8 @@ class CLI(cmd.Cmd):
             sys.stdout.write(str(e) + '\n\n')
 
     def do_plot_hist_rates(self, args: str) -> None:
+        """Calls the parser to identify the inputs, then calls the appropriate method to get the hist rates through
+        method_handler and prints a graph through the plotille module"""
         try:
             exp_args = {'Ticker': {'Type': 'String', 'Required': 1}, 'StartDate': {'Type': 'Date', 'Required': 0},
                         'EndDate': {'Type': 'Date', 'Required': 0}}
@@ -98,6 +110,8 @@ class CLI(cmd.Cmd):
             sys.stdout.write(str(e) + '\n\n')
 
     def do_plot_hist_prices(self, args: str) -> None:
+        """Calls the parser to identify the inputs, then calls the appropriate method to get the hist prices through
+        method_handler and prints a graph through the plotille module"""
         try:
             exp_args = {'Ticker': {'Type': 'String', 'Required': 1}, 'StartDate': {'Type': 'Date', 'Required': 0},
                         'EndDate': {'Type': 'Date', 'Required': 0}}
@@ -119,6 +133,8 @@ class CLI(cmd.Cmd):
             sys.stdout.write(str(e) + '\n\n')
 
     def do_get_hist_prices(self, args: str) -> None:
+        """Calls the parser to identify the inputs, then calls the appropriate method to get the hist prices through
+        method_handler and prints the obtained results"""
         try:
             exp_args = {'Ticker': {'Type': 'String', 'Required': 1}, 'StartDate': {'Type': 'Date', 'Required': 1},
                         'EndDate': {'Type': 'Date', 'Required': 1}, 'Currency': {'Type': 'String', 'Required': 0}}
@@ -135,6 +151,8 @@ class CLI(cmd.Cmd):
         sys.exit(1)
 
     def parse_args(self, args_obtained: str, args_exp: dict) -> dict:  # argsExp is {argName:{type: xxx, req: xxx}, ...}
+        """Used to identify inputs from the command string. It compares the obtained inputs with the expected ones
+        raising an exception if a required input is missing or if its type is not correct"""
         args_obtained = args_obtained.split()  # list of args obtained
         args_dic = {}  # dict that will be returned by the function {argName: value}
         args_names = list(args_exp.keys())  # names of the expected args
