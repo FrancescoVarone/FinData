@@ -1,8 +1,8 @@
-# The present class represents a intermediate level between CLI and DataHandler.
+# The present class represents an intermediate level between CLI and DataHandler.
 # User's commands caught from CLI call methods of this class that in turn call data_handler methods.
 # The methods of this class perform all the operations that by design cannot be done by CLI and DataHandler.
 # For example, if the user asks to get the historical prices for a stock in a foreign currency,
-#   all the operations needed to convert the data in the original currency are performed by a method of this class.
+#   all the operations needed to convert the data from the original currency are performed by a method of this class
 #   (see 'get_hist_prices')
 
 

@@ -1,9 +1,9 @@
 # The present class inherits from the built-in Cmd class.
 # The duties of this class are:
-#   - to catch user's command (by inheriting from Cmd class)
+#   - to catch user's commands (by inheriting from Cmd class)
 #   - to identify the inputs contained in the command string (by using the parse_args method)
-#   - to run the appropriate method associated with the user's command (by calling method_handler's methods)
-#   - to print the results of the method called (by using stdout or plotille module)
+#   - to run the appropriate method associated with the user's command (by calling method_handler methods)
+#   - to print the results of the command called (by using stdout or plotille module)
 
 
 import cmd
@@ -19,7 +19,8 @@ class CLI(cmd.Cmd):
         cmd.Cmd.__init__(self)
         self.prompt = '>>> '
         self.intro = 'DB loaded successfully! You have at your disposal 1Y history data for the ' \
-                     'largest 100 stocks of the S&P 500 index' + '\n' + \
+                     'largest 100 stocks of the S&P 500 index and the fx rates (vs USD) for the currencies ' \
+                     'AUD, GBP and EUR' + '\n' + \
                      "Type your command or write 'help' to see all available commands"
         self.__methodHandler = method_handler
 
@@ -42,14 +43,14 @@ class CLI(cmd.Cmd):
                                 " parameters. Data refer to OANDA exchange" + '\n')
         sys.stdout.write("Syntax is: 'plot_hist_rates currency startDate endDate'" + '\n')
         sys.stdout.write("To get the whole rates history, just type: 'plot_hist_rates currency'" + '\n')
-        sys.stdout.write("Example: 'plot_hist_rates AUD 2020/12/01 2020/12/15'" + '\n\n')
+        sys.stdout.write("Example: 'plot_hist_rates AUD 2020/05/01 2020/12/31'" + '\n\n')
 
     def help_plot_hist_prices(self):
         sys.stdout.write('\n' + "Plots the historical prices for a given ticker. StartDate and EndDate are optional"
                                 " parameters" + '\n')
         sys.stdout.write("Syntax is: 'plot_hist_prices ticker startDate endDate'" + '\n')
         sys.stdout.write("To get the whole prices history, just type: 'plot_hist_prices ticker'" + '\n')
-        sys.stdout.write("Example: 'plot_hist_prices AAPL 2020/12/01 2020/12/15'" + '\n\n')
+        sys.stdout.write("Example: 'plot_hist_prices AAPL 2020/05/01 2020/12/31'" + '\n\n')
 
     def help_get_hist_prices(self):
         sys.stdout.write('\n' + "Retrieves the historical prices for a given ticker in a given time range. Currency is "
@@ -150,7 +151,7 @@ class CLI(cmd.Cmd):
     def do_quit(self, args: str) -> None:
         sys.exit(1)
 
-    def parse_args(self, args_obtained: str, args_exp: dict) -> dict:  # argsExp is {argName:{type: xxx, req: xxx}, ...}
+    def parse_args(self, args_obtained: str, args_exp: dict) -> dict:
         """Used to identify inputs from the command string. It compares the obtained inputs with the expected ones
         raising an exception if a required input is missing or if its type is not correct"""
         args_obtained = args_obtained.split()  # list of args obtained

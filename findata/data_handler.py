@@ -11,7 +11,7 @@
 #               data['stock'][ticker]['anag'].keys() = ['country', 'currency', ...]
 #               data['stock'][ticker]['quotes'].keys() = ['c', 'h', 't', ...]
 
-# The fx data are organized in the following manner:
+# The fx data are stored in the following manner:
 #       data['fx'].keys() = [ticker1, ticker2, ...]
 #           data['fx'][ticker].keys() = ['anag', 'quotes']
 #               data['fx'][ticker]['anag'].keys() = ['description', 'displaySymbol', ...]

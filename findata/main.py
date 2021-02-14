@@ -1,5 +1,6 @@
 # The present script is used to run properly the program.
-# It creates the CLI object and initializes the cmdloop in which user's commands are processed.
+# It creates the objects for the three main classes (CLI, DataHandler and MethodHandler) and initializes
+# the cmdloop in which user's commands are processed.
 
 
 import cli
