@@ -47,7 +47,7 @@ class CLI(cmd.Cmd):
     def do_get_last_quotes(self, args):
         try:
             exp_args = {'Ticker': {'Type': 'String', 'Required': 1}, 'Currency': {'Type': 'String', 'Required': 0}}
-            args = self.__parse_args(args, exp_args)
+            args = self.parse_args(args, exp_args)
             res = self.__methodHandler.get_last_quotes(args['Ticker'], args['Currency'])
             sys.stdout.write('Close: ' + str(res['c']) + '\n')
             sys.stdout.write('High: ' + str(res['h']) + '\n')
@@ -61,7 +61,7 @@ class CLI(cmd.Cmd):
         try:
             exp_args = {'Ticker': {'Type': 'String', 'Required': 1}, 'StartDate': {'Type': 'Date', 'Required': 0},
                         'EndDate': {'Type': 'Date', 'Required': 0}}
-            args = self.__parse_args(args, exp_args)
+            args = self.parse_args(args, exp_args)
             res = self.__methodHandler.plot_hist_quotes(args['Ticker'], args['StartDate'], args['EndDate'], 'fx')
             if len(res.keys()) >= 2:
                 fig = plt.Figure()
@@ -82,7 +82,7 @@ class CLI(cmd.Cmd):
         try:
             exp_args = {'Ticker': {'Type': 'String', 'Required': 1}, 'StartDate': {'Type': 'Date', 'Required': 0},
                         'EndDate': {'Type': 'Date', 'Required': 0}}
-            args = self.__parse_args(args, exp_args)
+            args = self.parse_args(args, exp_args)
             res = self.__methodHandler.plot_hist_quotes(args['Ticker'], args['StartDate'], args['EndDate'], 'stock')
             if len(res.keys()) >= 2:
                 fig = plt.Figure()
@@ -103,7 +103,7 @@ class CLI(cmd.Cmd):
         try:
             exp_args = {'Ticker': {'Type': 'String', 'Required': 1}, 'StartDate': {'Type': 'Date', 'Required': 1},
                         'EndDate': {'Type': 'Date', 'Required': 1}, 'Currency': {'Type': 'String', 'Required': 0}}
-            args = self.__parse_args(args, exp_args)
+            args = self.parse_args(args, exp_args)
             res = self.__methodHandler.get_hist_prices(args['Ticker'], args['StartDate'], args['EndDate'],
                                                        args['Currency'])
             for i in res.keys():
@@ -115,7 +115,7 @@ class CLI(cmd.Cmd):
     def do_quit(self, args):
         sys.exit(1)
 
-    def __parse_args(self, args_obtained: str, args_exp: dict):  # argsExp is {argName:{type: xxx, req: xxx}, ...}
+    def parse_args(self, args_obtained: str, args_exp: dict) -> dict:  # argsExp is {argName:{type: xxx, req: xxx}, ...}
         args_obtained = args_obtained.split()  # list of args obtained
         args_dic = {}  # dict that will be returned by the function {argName: value}
         args_names = list(args_exp.keys())  # names of the expected args

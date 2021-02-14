@@ -28,6 +28,13 @@ class DataHandler:
         self.__s_date = dt.datetime(year=self.__e_date.year-1, month=self.__e_date.month, day=self.__e_date.day)
         self.__e_date_unix = str(mt.trunc(self.__e_date.timestamp()))
         self.__s_date_unix = str(mt.trunc(self.__s_date.timestamp()))
+
+    def load_db_manually(self, ticker: str, data: dict) -> None:
+        self.__data['stock'][ticker]['quotes'] = {}
+        self.__data['stock'][ticker]['quotes']['t'] = list(data.keys())
+        self.__data['stock'][ticker]['quotes']['c'] = list(data.values())
+
+    def load_db(self):
         self.__load_stock_data()
         self.__load_fx_data()
 
