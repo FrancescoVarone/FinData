@@ -9,14 +9,15 @@ import sys
 
 class DataHandler:
     def __init__(self, token: str):
-        self.__stock_tickers = ['AAPL', 'MSFT', 'AMZN', 'TSLA', 'FB', 'GOOGL']
-        self.__stock_tickers = ['AAPL', 'MSFT', 'AMZN', 'TSLA', 'FB', 'GOOGL', 'GOOG', 'BRK.B', 'JNJ', 'JPM', 'V', 'NVDA', 'DIS', 'PG', 'PYPL',
-         'UNH', 'HD', 'MA', 'BAC', 'NFLX', 'INTC', 'CMCSA', 'ADBE', 'VZ', 'CRM', 'ABT', 'T', 'XOM', 'CSCO', 'WMT',
-         'PFE', 'TMO', 'PEP', 'MRK', 'ABBV', 'AVGO', 'KO', 'NKE', 'CVX', 'QCOM', 'NEE', 'ACN', 'LLY', 'TXN', 'MDT',
-         'MCD', 'COST', 'DHR', 'HON', 'BMY', 'AMGN', 'UNP', 'WFC', 'LIN', 'PM', 'C', 'LOW', 'SBUX', 'ORCL', 'UPS',
-         'NOW', 'BA', 'RTX', 'IBM', 'AMD', 'CAT', 'BLK', 'MS', 'INTU', 'AMT', 'MMM', 'GS', 'GE', 'DE', 'CVS', 'TGT',
-         'AMAT', 'MU', 'CHTR', 'ISRG', 'BKNG', 'LMT', 'GILD', 'FIS', 'SCHW', 'TJX', 'AXP', 'MDLZ', 'MO', 'SPGI', 'PLD',
-         'SYK', 'TMUS', 'LRCX', 'ZTS', 'CI', 'BDX', 'CB', 'ANTM', 'ADP']
+        self.__stock_tickers = ['AAPL', 'MSFT', 'AMZN', 'TSLA', 'FB', 'GOOGL', 'GOOG', 'BRK.B', 'JNJ', 'JPM', 'V',
+                                'NVDA', 'DIS', 'PG', 'PYPL', 'UNH', 'HD', 'MA', 'BAC', 'NFLX', 'INTC', 'CMCSA', 'ADBE',
+                                'VZ', 'CRM', 'ABT', 'T', 'XOM', 'CSCO', 'WMT', 'PFE', 'TMO', 'PEP', 'MRK', 'ABBV',
+                                'AVGO', 'KO', 'NKE', 'CVX', 'QCOM', 'NEE', 'ACN', 'LLY', 'TXN', 'MDT', 'MCD', 'COST',
+                                'DHR', 'HON', 'BMY', 'AMGN', 'UNP', 'WFC', 'LIN', 'PM', 'C', 'LOW', 'SBUX', 'ORCL',
+                                'UPS', 'NOW', 'BA', 'RTX', 'IBM', 'AMD', 'CAT', 'BLK', 'MS', 'INTU', 'AMT', 'MMM', 'GS',
+                                'GE', 'DE', 'CVS', 'TGT', 'AMAT', 'MU', 'CHTR', 'ISRG', 'BKNG', 'LMT', 'GILD', 'FIS',
+                                'SCHW', 'TJX', 'AXP', 'MDLZ', 'MO', 'SPGI', 'PLD', 'SYK', 'TMUS', 'LRCX', 'ZTS', 'CI',
+                                'BDX', 'CB', 'ANTM', 'ADP']
         self.__fx_tickers = ['OANDA:AUD_USD', 'OANDA:EUR_USD', 'OANDA:GBP_USD']
         self.__token = token
         self.__data = {'stock': {}, 'fx': {}}
@@ -25,7 +26,7 @@ class DataHandler:
         for ticker in self.__fx_tickers:
             self.__data['fx'][ticker] = {}
         self.__e_date = dt.datetime.today() - dt.timedelta(days=1)
-        self.__s_date = dt.datetime(year=self.__e_date.year-1, month=self.__e_date.month, day=self.__e_date.day)
+        self.__s_date = dt.datetime(year=self.__e_date.year - 1, month=self.__e_date.month, day=self.__e_date.day)
         self.__e_date_unix = str(mt.trunc(self.__e_date.timestamp()))
         self.__s_date_unix = str(mt.trunc(self.__s_date.timestamp()))
 
@@ -61,7 +62,7 @@ class DataHandler:
             tm.sleep(0.5)
             sys.stdout.write('\r')
             sys.stdout.write('Loading DB with stock anagraphic data. Please wait... ' +
-                             str(mt.trunc((i+1)/len(self.__stock_tickers)*100)) + '%')
+                             str(mt.trunc((i + 1) / len(self.__stock_tickers) * 100)) + '%')
         sys.stdout.write('\n')
 
         for i in range(0, len(self.__stock_tickers)):
@@ -78,9 +79,9 @@ class DataHandler:
             tm.sleep(0.5)
             sys.stdout.write('\r')
             sys.stdout.write('Loading DB with stock price data. Please wait... ' +
-                             str(mt.trunc((i+1)/len(self.__stock_tickers)*100)) + '%')
+                             str(mt.trunc((i + 1) / len(self.__stock_tickers) * 100)) + '%')
         sys.stdout.write('\n')
-        #Convert unix time stamps to dates
+        # Convert unix time stamps to dates
         for ticker in self.__stock_tickers:
             for i in range(0, len(self.__data['stock'][ticker]['quotes']['t'])):
                 date = dt.datetime.utcfromtimestamp(self.__data['stock'][ticker]['quotes']['t'][i])
@@ -102,14 +103,14 @@ class DataHandler:
             tm.sleep(0.5)
             sys.stdout.write('\r')
             sys.stdout.write('Loading DB with forex anagraphic data. Please wait... ' +
-                             str(mt.trunc((i+1)/len(self.__fx_tickers)*100)) + '%')
+                             str(mt.trunc((i + 1) / len(self.__fx_tickers) * 100)) + '%')
         sys.stdout.write('\n')
 
         for i in range(0, len(self.__fx_tickers)):
             ticker = self.__fx_tickers[i]
             res = None
             url = 'https://finnhub.io/api/v1/forex/candle?symbol=' + ticker + '&resolution=D&from=' + \
-                  self.__s_date_unix + '&to=' +self.__e_date_unix + '&token=' + self.__token
+                  self.__s_date_unix + '&to=' + self.__e_date_unix + '&token=' + self.__token
             while res is None:
                 try:
                     res = urllib.request.urlopen(url)
@@ -119,19 +120,19 @@ class DataHandler:
             tm.sleep(0.5)
             sys.stdout.write('\r')
             sys.stdout.write('Loading DB with forex rates. Please wait... ' +
-                             str(mt.trunc((i+1)/len(self.__fx_tickers)*100)) + '%')
+                             str(mt.trunc((i + 1) / len(self.__fx_tickers) * 100)) + '%')
         sys.stdout.write('\n')
 
-        #Convert unix time stamps to dates
+        # Convert unix time stamps to dates
         for ticker in self.__fx_tickers:
             for i in range(0, len(self.__data['fx'][ticker]['quotes']['t'])):
                 date = dt.datetime.utcfromtimestamp(self.__data['fx'][ticker]['quotes']['t'][i])
                 self.__data['fx'][ticker]['quotes']['t'][i] = dt.datetime(date.year, date.month, date.day)
 
     def get_hist_close(self, ticker: str, flag: str, s_date: dt.datetime, e_date: dt.datetime) -> dict:
-        if s_date > e_date :
+        if s_date > e_date:
             raise Exception('Error: start date cannot be greater than end date')
-        if not(ticker in list(self.__data[flag].keys())):
+        if not (ticker in list(self.__data[flag].keys())):
             if flag == 'stock':
                 msg = 'Error: ticker not included in the Database'
             else:
@@ -154,7 +155,7 @@ class DataHandler:
             while self.__data[flag][ticker]['quotes']['t'][i] < s_date:
                 i = i + 1
             s_index = i
-        for i in range(s_index, e_index+1):
+        for i in range(s_index, e_index + 1):
             res_dic[self.__data[flag][ticker]['quotes']['t'][i]] = self.__data[flag][ticker]['quotes']['c'][i]
         return res_dic
 
